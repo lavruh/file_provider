@@ -30,10 +30,14 @@ class PickerFileProvider implements IFileProvider {
   @override
   Future<bool> saveDataToFile({
     required Uint8List data,
+    String? title,
+    String? fileName,
     List<String>? allowedExtensions,
   }) async {
     try {
       FilePicker.platform.saveFile(
+        dialogTitle: title,
+        fileName: fileName,
         allowedExtensions: allowedExtensions,
         bytes: data,
       );

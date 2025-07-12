@@ -16,6 +16,8 @@ abstract class IFileProvider {
 
   Future<bool> saveDataToFile({
     required Uint8List data,
+    String? title,
+    String? fileName,
     List<String>? allowedExtensions,
   });
 }
