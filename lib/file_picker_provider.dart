@@ -13,14 +13,14 @@ class PickerFileProvider implements IFileProvider {
     List<String>? allowedExtensions,
   }) async {
     try {
-      final f = await FilePicker.platform.saveFile(
+      final f = await FilePicker.pickFile(
         dialogTitle: title,
         allowedExtensions: allowedExtensions,
         type: allowedExtensions == null ? FileType.any : FileType.custom,
       );
       if (f == null) throw FileProviderException('No file selected');
-      final filePath = f;
-      if (filePath.isEmpty) throw FileProviderException("Wrong file path");
+      final filePath = f.path;
+      if (filePath == null || filePath.isEmpty) throw FileProviderException("Wrong file path");
       return File(filePath);
     } catch (e) {
       rethrow;
@@ -35,21 +35,20 @@ class PickerFileProvider implements IFileProvider {
     List<String>? allowedExtensions,
   }) async {
     try {
-      FilePicker.platform.saveFile(
+      final uri = await FilePicker.saveFile(
         dialogTitle: title,
-        fileName: fileName,
-        allowedExtensions: allowedExtensions,
+        fileName: fileName ?? 'file',
         bytes: data,
       );
+      return uri != null;
     } on Exception catch (_) {
       return false;
     }
-    return true;
   }
 
   @override
   Future<Directory> selectDirectory({required String title}) async {
-    final path = await FilePicker.platform.getDirectoryPath(dialogTitle: title);
+    final path = await FilePicker.getDirectoryPath(dialogTitle: title);
     if (path == null) throw FileProviderException('No directory selected');
     final dir = Directory(path);
     if (dir.existsSync()) return dir;

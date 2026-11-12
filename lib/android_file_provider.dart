@@ -14,7 +14,7 @@ class AndroidFileProvider implements IFileProvider {
     required String title,
     List<String>? allowedExtensions,
   }) async {
-    final d = await FilePicker.platform.getDirectoryPath(
+    final d = await FilePicker.getDirectoryPath(
       dialogTitle: "Select work directory",
     );
     if (d == null) throw FileProviderException('No directory selected');
@@ -42,20 +42,20 @@ class AndroidFileProvider implements IFileProvider {
     List<String>? allowedExtensions,
   }) async {
     try {
-      FilePicker.platform.saveFile(
-        dialogTitle: title, fileName: fileName,
-        allowedExtensions: allowedExtensions,
+      final uri = await FilePicker.saveFile(
+        dialogTitle: title,
+        fileName: fileName ?? 'file',
         bytes: data,
       );
+      return uri != null;
     } on Exception catch (_) {
       return false;
     }
-    return true;
   }
 
   @override
   Future<Directory> selectDirectory({required String title}) async {
-    final path = await FilePicker.platform.getDirectoryPath(dialogTitle: title);
+    final path = await FilePicker.getDirectoryPath(dialogTitle: title);
     if (path == null) throw FileProviderException('No directory selected');
     final dir = Directory(path);
     if (dir.existsSync()) return dir;
